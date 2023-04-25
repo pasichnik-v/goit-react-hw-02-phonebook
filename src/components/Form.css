@@ -24,11 +24,11 @@ button {
   border: none;
   border-radius: 4px;
   font-size: 16px;
-  background-color: #007bff;
+  background-color: skyblue;
   color: #fff;
   cursor: pointer;
 }
 
 button:hover {
-  background-color: #0056b3;
+  background-color: #007bff;
 }
