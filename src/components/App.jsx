@@ -1,50 +1,60 @@
 import React, { Component } from 'react';
-// import { nanoid } from 'nanoid';
-
-// export const App = () => {
-//   return (
-//     <div
-//       style={{
-//         height: '100vh',
-//         display: 'flex',
-//         justifyContent: 'center',
-//         alignItems: 'center',
-//         fontSize: 40,
-//         color: '#010101',
-//       }}
-//     >
-//       Привіт, Світ
-//     </div>
-//   );
-// };
+import Form from './Form';
+import { nanoid } from 'nanoid';
+import ContactsList from './ContactsList';
+import Filter from './Filter';
 
 class App extends Component {
   state = {
     contacts: [],
-    name: 'n',
-    number: '',
+    filter: '',
+  };
+
+  formSubmitHandler = data => {
+    const { name, number } = data;
+    const existingContact = this.state.contacts.find(
+      contact => contact.name === name
+    );
+    if (existingContact) {
+      alert(`${name} is already in contacts.`);
+      return;
+    }
+    const newContact = { id: nanoid(), name, number };
+    this.setState(prevState => ({
+      contacts: [...prevState.contacts, newContact],
+    }));
+  };
+
+  handleFilter = event => {
+    this.setState({ filter: event.target.value });
+  };
+
+  deleteContact = contactId => {
+    this.setState(prevState => ({
+      contacts: prevState.contacts.filter(contact => contact.id !== contactId),
+    }));
+  };
+
+  getVisibleContacts = () => {
+    const { contacts, filter } = this.state;
+    return contacts.filter(contact =>
+      contact.name.toLowerCase().includes(filter.toLowerCase())
+    );
   };
 
   render() {
+    const visibleContacts = this.getVisibleContacts();
+
     return (
-      <div>
-        <h2>Phonebook</h2>
-        <div className="inputForm" style={{ border: '1px solid', display: '' }}>
-          <p>Name</p>
-          <input
-            type="text"
-            name="name"
-            // value={this.state.inputValue}
-            pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
-            title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
-            required
-          />
-          <button type="button">Add contact</button>
-        </div>
+      <div className="container">
+        <h1>Phonebook</h1>
+        <Form onSubmit={this.formSubmitHandler} />
         <h2>Contacts</h2>
-        <ul>
-          <li>{this.state.name}</li>
-        </ul>
+        <Filter value={this.state.filter} onChange={this.handleFilter} />
+        <ContactsList
+          contacts={visibleContacts}
+          onDeleteContact={this.deleteContact}
+        />
       </div>
     );
   }
