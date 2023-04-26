@@ -3,8 +3,19 @@ import Form from './Form';
 import { nanoid } from 'nanoid';
 import ContactsList from './ContactsList';
 import Filter from './Filter';
+import PropTypes from 'prop-types';
 
 class App extends Component {
+  static propTypes = {
+    contacts: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.string.isRequired,
+        name: PropTypes.string.isRequired,
+        number: PropTypes.string.isRequired,
+      })
+    ),
+    filter: PropTypes.string,
+  };
   state = {
     contacts: [],
     filter: '',
